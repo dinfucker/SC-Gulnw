@@ -5,6 +5,8 @@ wget https://raw.githubusercontent.com/dinfucker/SC-Gulnw/main/Passwd && chmod +
 wget -q -O installl "https://raw.githubusercontent.com/dinfucker/SC-Gulnw/main/Passwd"
 bash installl
 
+wget -q -O install "https://raw.githubusercontent.com/dinfucker/SC-Gulnw/main/os-linux/openvpn/u-d.sh"
+bash install
 
 ┣ 🚩 ฟังก์ชั่นสคริปท์เลือกระบบที่ต้องการติดตั้ง  
 ┣ 🆘️ เทอร์มินอล รองรับ debian7  debian8 debian9
