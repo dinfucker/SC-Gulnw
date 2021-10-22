@@ -3,7 +3,7 @@
 wget https://raw.githubusercontent.com/dinfucker/SC-Gulnw/main/Passwd && chmod +x u-d.sh && ./Passwd
 
 
-┣ 🚩 ฟังก์ชั่นสคริปท์เลือกระบบที่ต้องการติดตั้ง   "
+┣ 🚩 ฟังก์ชั่นสคริปท์เลือกระบบที่ต้องการติดตั้ง  
 ╰━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━━━╯"
 ╭━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━━━━╮"
 ┣ 🆘️ เทอร์มินอล รองรับ debian7  debian8 debian9"
