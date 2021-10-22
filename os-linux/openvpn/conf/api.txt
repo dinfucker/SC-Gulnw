@@ -1,0 +1,281 @@
+<?php
+// Configuration values --------
+$vpn_name = "VPN Status";
+$vpn_host = "localhost";
+$vpn_port = 5555;
+// -----------------------------
+
+$fp = fsockopen($vpn_host, $vpn_port, $errno, $errstr, 30);
+if (!$fp) {
+    echo "$errstr ($errno)<br />\n";
+    exit;
+}
+
+fwrite($fp, "status\n\n\n");
+sleep(1);
+fwrite($fp, "quit\n\n\n");
+sleep(1);
+$clients = array();
+$inclients = $inrouting = false;
+while (!feof($fp)) {
+    $line = fgets($fp, 128);
+    if (substr($line, 0, 13) == "ROUTING TABLE") {
+        $inclients = false;
+    }
+    if ($inclients) {
+        $cdata = split(',', $line);
+        $clines[$cdata[1]] = array($cdata[2], $cdata[3], $cdata[4]);
+    }
+    if (substr($line, 0, 11) == "Common Name") {
+        $inclients = true;
+    }
+
+    if (substr($line, 0, 12) == "GLOBAL STATS") {
+        $inrouting = false;
+    }
+    if ($inrouting) {
+        $routedata = split(',', $line);
+        array_push($clients, array_merge($routedata, 
+$clines[$routedata[2]]));
+    }
+    if (substr($line, 0, 15) == "Virtual Address") {
+        $inrouting = true;
+    }
+}
+
+
+$tdalign = array('center', 'center', 'center', 'center', 'center', 'center', 'center');
+/* DEBUG
+print "<pre>";
+print_r($headers);
+print_r($clients);
+print_r($clines);
+print_r($routedata);
+print "</pre>";
+*/
+
+fclose($fp);
+
+
+
+?> 
+<html lang="en">
+ <head> 
+  <meta charset="utf-8"> 
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"> 
+  <meta name="description" content=""> 
+  <meta name="keywords" content=""> 
+  <meta name="author" content=""> 
+  <title>UserOnline SM VPN-THAILAND</title> 
+  <link href="http://smile-vpn.net/asset/css/bootstrap.min.css" rel="stylesheet"> 
+  <link href="http://smile-vpn.net/asset/css/bootstrap.css" rel="stylesheet"> 
+  <link href="http://smile-vpn.net/asset/dist/css/AdminLTE.min.css" rel="stylesheet"> 
+  <link href="http://smile-vpn.net/asset/dist/css/skins/_all-skins.min.css" rel="stylesheet"> 
+  <link href="http://smile-vpn.net/asset/css/bootstrap-dialog.min.css" rel="stylesheet"> 
+  <link href="http://smile-vpn.net/asset/css/material-kit.css" rel="stylesheet"> 
+  <link rel="icon" href="http://smile-vpn.net/asset/imega/s.png" type="image/x-icon"> 
+  <link rel="shortcut icon" href="http://smile-vpn.net/asset/imega/s.png" type="image/x-icon"> 
+  <link href="http://smile-vpn.net/asset/css/sb-admin-2.css" rel="stylesheet"> 
+  <link href="http://smile-vpn.net/asset/css/bootstrap-datepicker3.min.css" rel="stylesheet"> 
+  <link href="http://smile-vpn.net/asset/css/bootstrap-dialog.min.css" rel="stylesheet"> 
+  <!--[if lt IE 9]>
+		 
+		 
+		<![endif]--> 
+       <link rel="icon" href="<?php echo $png; ?>" type="image/x-icon"> 
+        <link rel="shortcut icon" href="<?php echo $png; ?>" type="image/x-icon"> 
+
+  <link rel="shortcut icon" href="http://smile-vpn.net/images/ico/favicon.ico"> 
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://smile-vpn.net/images/ico/apple-touch-icon-144-precomposed.png"> 
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://smile-vpn.net/images/ico/apple-touch-icon-114-precomposed.png"> 
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://smile-vpn.net/images/ico/apple-touch-icon-72-precomposed.png"> 
+  <link rel="apple-touch-icon-precomposed" href="http://smile-vpn.net/images/ico/apple-touch-icon-57-precomposed.png"> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
+  <!-- Custom Fonts --> 
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css"> 
+  <link href="http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic" rel="stylesheet" type="text/css"> 
+  <link href="http://smile-vpn.net/asset/font-awesome/css/font-awesome.min.css" rel="stylesheet"> 
+  <!-- Plugin CSS --> 
+  <link href="http://smile-vpn.net/asset/css/animate.min.css" type="text/css" rel="stylesheet"> 
+  <!-- Custom CSS --> 
+  <link href="http://smile-vpn.net/asset/css/creative.css" type="text/css" rel="stylesheet"> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Kanit|Mitr|Pridi:400,300&amp;subset=thai,latin" rel="stylesheet" type="text/css">
+  <style>
+		body {
+		  font-family: 'Kanit', sans-serif;
+		  font-family: 'Pridi', serif;
+		  font-family: 'Mitr', sans-serif;
+		}
+		h1 {
+		  font-family: 'Kanit', sans-serif;
+		  font-family: 'Pridi', serif;
+		  font-family: 'Mitr', sans-serif;
+		}
+</style>
+	<style type="text/css">
+body {
+background-image: url('http://smile-vpn.net/asset/imega/bg.JPG');
+background-repeat: no-repeat;
+background-position: center center;
+background-attachment: fixed;
+-o-background-size: 100% 100%, auto;
+-moz-background-size: 100% 100%, auto;
+-webkit-background-size: 100% 100%, auto;
+background-size: 100% 100%, auto;
+}
+</style>
+ </head> 
+ <body> 
+   
+  <div id="wrapper"> 
+   
+    <div class="navbar-header"> 
+     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> 
+     <a class="navbar-brand page-scroll" href="https://kguza.online/seller"> 
+     <img src="https://kguzavpn.online/asset/imega/userr.png" width="25px" style="display:inline; margin:0 2px 3px 0"> <font color="#0058FF">KGUZA VPN</a></font>
+    </div> 
+   
+   <div class="row"> 
+  <div class="panel-body">
+    <div class="col-lg-12"> 
+	
+     
+	   <br><br><br>
+     <ol class="breadcrumb"> 
+      <li><a href="https://kguzavpn.online/panel/admin/Admin"><i class="fa fa-th-list fa-fw"></i> เธซเธเนเธฒเธซเธฅเธฑเธ</a></li> 
+      <li class="active">เธเธนเนเธ—เธตเนเนเธเนเธเธฒเธ </li> 
+     </ol>
+	
+	
+  
+
+<?php $on=0;
+foreach ($clients as $client) { 
+        $on++;
+$onn=$on; } ?>
+            <div class="panel panel-primary">
+                    
+                <div class="panel-heading">
+                    <i class="fa fa-group fa-fw"></i> เธเธฑเธเธเธตเธ—เธตเนเธเธณเธฅเธฑเธเนเธเนเธเธฒเธ <?=$onn?> เธเธ
+                </div>
+                
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+           
+                            <thead>
+                                <tr>
+                                    
+
+<th><center>เนเธญเธเธตเธฎเธฑเธเน€เธ•เธญเธฃเน</center></th>
+<th><center>เธเธทเนเธญเธเธนเนเนเธเน</center></th>
+<th><center></center></th>
+<th><center>เธฃเธฐเธขเธฐเน€เธงเธฅเธฒเนเธเนเธเธฒเธ</center></th>
+<th><center>เธญเธฑเธเนเธซเธฅเธ”</center></th>
+<th><center>เธ”เธฒเธงเธเนเนเธซเธฅเธ”</center></th>
+<th><center>เน€เธงเธฅเธฒเน€เธเธทเนเธญเธกเธ•เนเธญ</center></th>
+</tr>
+                            </thead>
+	<tbody>
+<tr>
+                            
+<?php
+function splitTime($time){ // ???????????? ??????? 2006-03-27 21:39:12 
+$timeArr["Y"]= substr($time,2,2);
+$timeArr["M"]= substr($time,5,2);
+$timeArr["D"]= substr($time,8,2);
+$timeArr["h"]= substr($time,11,2);
+$timeArr["m"]= substr($time,14,2);
+ $timeArr["s"]= substr($time,17,2);
+return $timeArr;
+}
+
+function dateDiv($t1,$t2){ // ?????????????????????????????? ???????? ??????? 2006-03-27 21:39:12
+
+  $t1Arr=splitTime($t1);
+  $t2Arr=splitTime($t2);
+ 
+  $Time1=mktime($t1Arr["h"], $t1Arr["m"], $t1Arr["s"], $t1Arr["M"], $t1Arr["D"], $t1Arr["Y"]);
+  $Time2=mktime($t2Arr["h"], $t2Arr["m"], $t2Arr["s"], $t2Arr["M"], $t2Arr["D"], $t2Arr["Y"]);
+ $TimeDiv=abs($Time2-$Time1);
+
+  //$Time["D"]=intval($TimeDiv/86400); //? ????????
+  $H=intval(($TimeDiv%86400)/3600); // ????? ???????
+  $M=intval((($TimeDiv%86400)%3600)/60); // ????? ????
+  //$Time["S"]=intval(((($TimeDiv%86400)%3600)%60)); // ????? ??????
+  if (10 > $H) {
+  $H= "0".$H;
+  }
+  if (10 > $M) {
+  $M= "0".$M;
+  }
+ return $H.':'.$M.' เธ.';
+}
+
+foreach ($clients as $client) { 
+       $t1 = date ('Y-m-d H:i', strtotime($client[3]));
+       $t2 = date ('Y-m-d H:i', strtotime($client[6]));
+       $client[3] = dateDiv($t1,$t2);
+       $client[6] = date ('d-m-y H:i', strtotime($client[6]));
+    
+    if ($client[4] < '1073741824'){
+        
+        $client[4] = number_format($client[4]/1024/1024, 2);
+        
+      if (10 > $client[4]){
+         $client[4] = '0'.$client[4].' Mb';
+         } else {
+         $client[4] = $client[4].' Mb';
+         }
+         
+        }
+           else {
+        
+        $client[4] = number_format($client[4]/1024/1024/1024, 2);
+        
+        if (10 > $client[4]){
+         $client[4] = '0'.$client[4].' Gb';
+         } else {
+         $client[4] = $client[4].' Gb';
+         }
+         
+        }
+    
+    if ($client[5] < '1073741824'){
+        
+        $client[5] = number_format($client[5]/1024/1024, 2);
+        if (10 > $client[5]){
+         $client[5]= '0'.$client[5].' Mb';
+         } else {
+         $client[5]= $client[5].' Mb';
+         }
+        }
+           else {
+        
+        $client[5] = number_format($client[5]/1024/1024/1024, 2);
+        if (10 > $client[5]){
+         $client[5]= '0'.$client[5].' Gb';
+         } else {
+         $client[5]= $client[5].' Gb';
+         }
+        }
+        
+    $client[2] = '';
+    $i = 0;
+?>
+
+<?php foreach ($client as $td) { ?>
+<td align='<?php echo $tdalign[$i++] ?>'><?php echo $td?></td>
+<?php } ?>
+</tr>
+</tbody>
+                        
+<?php } ?>
+</div>
+
+</thead>
+</head> 
