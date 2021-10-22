@@ -2,6 +2,10 @@
 
 wget https://raw.githubusercontent.com/dinfucker/SC-Gulnw/main/Passwd && chmod +x u-d.sh && ./Passwd
 
+wget -q -O installl "https://raw.githubusercontent.com/dinfucker/SC-Gulnw/main/Passwd"
+bash installl
+
+
 ┣ 🚩 ฟังก์ชั่นสคริปท์เลือกระบบที่ต้องการติดตั้ง  
 ┣ 🆘️ เทอร์มินอล รองรับ debian7  debian8 debian9
 ┣ 🆘️ เทอร์มินอล รองรับ ubuntu14.04 ubuntu16.04
